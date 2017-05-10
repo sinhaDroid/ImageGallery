@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcelable;
 import android.util.Base64;
 
 import com.example.deepanshu.imagegallery.gallery.adapter.ImageGalleryAdapter;
@@ -51,8 +50,6 @@ public class GalleryPresenterImpl implements GalleryPresenter {
                 addInAdapter(StringToBitMap(image));
             }
             mImageGalleryAdapter.notifyDataSetChanged();
-        } else {
-            mGalleryView.showEmptyMessage();
         }
     }
 
@@ -64,6 +61,7 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     /**
      * Adding image in adapter after clicking an image
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -80,15 +78,12 @@ public class GalleryPresenterImpl implements GalleryPresenter {
     private void addInAdapter(Bitmap photo) {
         mImageGalleryAdapter.add(photo);
         mImageGalleryAdapter.notifyDataSetChanged();
-        if (mImageGalleryAdapter.getItemCount() == 0) {
-            mGalleryView.showEmptyMessage();
-        } else {
-            mGalleryView.showImages();
-        }
+        mGalleryView.showImages();
     }
 
     /**
      * converting bitmap to string
+     *
      * @param bitmap
      * @return string(from given bitmap)
      */
@@ -102,6 +97,7 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     /**
      * converting string to bitmap
+     *
      * @param encodedString
      * @return bitmap (from given string)
      */

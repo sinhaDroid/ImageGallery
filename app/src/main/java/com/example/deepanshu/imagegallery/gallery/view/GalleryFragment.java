@@ -61,12 +61,6 @@ public class GalleryFragment extends Fragment implements GalleryView, View.OnCli
     }
 
     @Override
-    public void showEmptyMessage() {
-        mGallery.setVisibility(View.GONE);
-        getActivity().findViewById(R.id.no_image_tv).setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void showImages() {
         getActivity().findViewById(R.id.no_image_tv).setVisibility(View.GONE);
         mGallery.setVisibility(View.VISIBLE);

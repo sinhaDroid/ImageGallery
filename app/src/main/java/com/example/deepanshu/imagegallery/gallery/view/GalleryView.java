@@ -13,7 +13,5 @@ public interface GalleryView {
 
     void startActivityForResult(Intent intent, int requestCode);
 
-    void showEmptyMessage();
-
     void showImages();
 }

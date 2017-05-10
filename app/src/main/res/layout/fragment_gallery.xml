@@ -18,8 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/no_images_clicked"
-        android:visibility="gone" />
+        android:text="@string/no_images_clicked" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/camera_fab"
