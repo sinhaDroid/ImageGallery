@@ -7,7 +7,8 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.example.deepanshu.imagegallery.gallery.adapter.ImageGalleryAdapter;
-import com.example.deepanshu.imagegallery.gallery.db.GalleryDataHandler;
+import com.example.deepanshu.imagegallery.gallery.db.DatabaseHelper;
+import com.example.deepanshu.imagegallery.gallery.db.DbBitmapUtility;
 import com.example.deepanshu.imagegallery.gallery.view.GalleryView;
 
 import java.io.ByteArrayOutputStream;
@@ -25,8 +26,11 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     private GalleryView mGalleryView;
 
+    private DatabaseHelper mDatabaseHelper;
+
     private GalleryPresenterImpl(GalleryView galleryView) {
         this.mGalleryView = galleryView;
+        this.mDatabaseHelper = new DatabaseHelper(mGalleryView.getContext());
     }
 
     public static GalleryPresenterImpl newInstance(GalleryView galleryView) {
@@ -43,11 +47,11 @@ public class GalleryPresenterImpl implements GalleryPresenter {
     }
 
     private void addStoredImagesInAdapter() {
-        List<String> imageList = GalleryDataHandler.getInstance().getImageList();
+        List<byte[]> allImages = mDatabaseHelper.getAllImages();
 
-        if (null != imageList && imageList.size() > 0) {
-            for (String image : imageList) {
-                addInAdapter(StringToBitMap(image));
+        if (null != allImages && allImages.size() > 0) {
+            for (byte[] allImage : allImages) {
+                addInAdapter(DbBitmapUtility.getImage(allImage));
             }
             mImageGalleryAdapter.notifyDataSetChanged();
         }
@@ -61,7 +65,6 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     /**
      * Adding image in adapter after clicking an image
-     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -70,7 +73,7 @@ public class GalleryPresenterImpl implements GalleryPresenter {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            GalleryDataHandler.getInstance().saveImage(BitMapToString(photo));
+            mDatabaseHelper.addImage(DbBitmapUtility.getBytes(photo));
             addInAdapter(photo);
         }
     }
