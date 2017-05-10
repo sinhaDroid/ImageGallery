@@ -1,7 +1,9 @@
 package com.example.deepanshu.imagegallery.gallery.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +20,11 @@ import com.example.deepanshu.imagegallery.gallery.presenter.GalleryPresenterImpl
  * Created by deepanshu on 10/5/17.
  */
 
-public class GalleryFragment extends Fragment implements GalleryView {
+public class GalleryFragment extends Fragment implements GalleryView, View.OnClickListener {
 
     private RecyclerView mGallery;
+
+    private FloatingActionButton mFab;
 
     private GalleryPresenter mGalleryPresenter;
 
@@ -43,6 +47,9 @@ public class GalleryFragment extends Fragment implements GalleryView {
         mGallery.setHasFixedSize(true);
         mGallery.setLayoutManager(layoutManager);
 
+        mFab = (FloatingActionButton) getActivity().findViewById(R.id.camera_fab);
+        mFab.setOnClickListener(this);
+
         mGalleryPresenter = GalleryPresenterImpl.newInstance(this);
         mGalleryPresenter.onActivityCreated();
     }
@@ -50,5 +57,20 @@ public class GalleryFragment extends Fragment implements GalleryView {
     @Override
     public void setAdapter(ImageGalleryAdapter imageGalleryAdapter) {
         mGallery.setAdapter(imageGalleryAdapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.camera_fab:
+                mGalleryPresenter.onClickCamera();
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mGalleryPresenter.onActivityResult(requestCode, resultCode, data);
     }
 }

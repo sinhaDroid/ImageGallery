@@ -1,5 +1,7 @@
 package com.example.deepanshu.imagegallery.gallery.view;
 
+import android.content.Intent;
+
 import com.example.deepanshu.imagegallery.gallery.adapter.ImageGalleryAdapter;
 
 /**
@@ -8,4 +10,6 @@ import com.example.deepanshu.imagegallery.gallery.adapter.ImageGalleryAdapter;
 
 public interface GalleryView {
     void setAdapter(ImageGalleryAdapter imageGalleryAdapter);
+
+    void startActivityForResult(Intent intent, int requestCode);
 }
