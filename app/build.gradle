@@ -30,5 +30,10 @@ dependencies {
 
     // Recyclerview
     compile 'com.android.support:recyclerview-v7:25.3.1'
+
+    // Support Design
     compile 'com.android.support:design:25.3.1'
+
+    // Glide
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

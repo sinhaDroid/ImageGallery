@@ -1,11 +1,14 @@
 package com.example.deepanshu.imagegallery.gallery.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.deepanshu.imagegallery.R;
 
 import java.util.ArrayList;
@@ -21,12 +24,13 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.inflater_image, parent, false));
+        Context context = parent.getContext();
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.inflater_image, parent, false), context);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
+        holder.bind(getItem(position));
     }
 
     private Bitmap getItem(int position) {
@@ -42,9 +46,22 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         bitmapList.add(bitmap);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public MyViewHolder(View itemView) {
+    class MyViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView imageView;
+        Context context;
+
+        MyViewHolder(View itemView, Context context) {
             super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.iv_photo);
+        }
+
+        void bind(Bitmap item) {
+            Glide.with(imageView.getContext())
+                    .load(item)
+                    .crossFade()
+                    .placeholder(android.R.drawable.ic_menu_camera)
+                    .into(imageView);
         }
     }
 }

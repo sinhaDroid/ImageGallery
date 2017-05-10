@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by deepanshu on 10/5/17.
@@ -31,12 +33,12 @@ public class GalleryDataHandler {
         return mSharedPreferences;
     }
 
-    public void setSharedStringData(String key, String value) {
-        getEditor().putString(key, value).apply();
+    private void setSharedStringSetData(String key, HashSet<String> valueList) {
+        getEditor().putStringSet(key, valueList).apply();
     }
 
-    public String getSharedStringData(String key) {
-        return getSharedPreferences().getString(key, null);
+    private Set<String> getSharedStringSetData(String key) {
+        return getSharedPreferences().getStringSet(key, null);
     }
 
     private SharedPreferences.Editor getEditor() {
@@ -49,15 +51,17 @@ public class GalleryDataHandler {
     }
 
     public List<String> getImageList() {
-        String imageList = getSharedStringData("IMAGE_LIST");
+        Set<String> imageList = getSharedStringSetData("IMAGE_LIST");
 
-        if (null != imageList && imageList.length() > 0) {
-            return new ArrayList<>();
+        if (null != imageList && imageList.size() > 0) {
+            return new ArrayList<>(imageList);
         }
         return new ArrayList<>();
     }
 
-    public void saveImageList(List<String> imageList) {
-//        setSharedStringData("IMAGE_LIST", imageList);
+    private void saveImageList(List<String> imageList) {
+        HashSet<String> set = new HashSet<>();
+        set.addAll(imageList);
+        setSharedStringSetData("IMAGE_LIST", set);
     }
 }
