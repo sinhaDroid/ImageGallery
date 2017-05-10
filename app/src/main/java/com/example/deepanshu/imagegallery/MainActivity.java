@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // adding fragment to hold gallery screen
         getSupportFragmentManager().
                 beginTransaction()
                 .replace(R.id.container, GalleryFragment.newInstance())

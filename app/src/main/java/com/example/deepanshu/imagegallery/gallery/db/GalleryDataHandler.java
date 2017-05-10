@@ -45,11 +45,20 @@ public class GalleryDataHandler {
         return getSharedPreferences().edit();
     }
 
+    /**
+     * Adding Image in previous stored list and saving it
+      * @param bitMapToString - imageString
+     */
     public void saveImage(String bitMapToString) {
-        getImageList().add(bitMapToString);
-        saveImageList(getImageList());
+        List<String> imageList = getImageList();
+        imageList.add(bitMapToString);
+        saveImageList(imageList);
     }
 
+    /**
+     * Giving stored image list
+     * @return - if there is no image in db, returning empty array list else list of images
+     */
     public List<String> getImageList() {
         Set<String> imageList = getSharedStringSetData("IMAGE_LIST");
 
@@ -59,6 +68,10 @@ public class GalleryDataHandler {
         return new ArrayList<>();
     }
 
+    /**
+     * Saving list of images
+     * @param imageList - image list
+     */
     private void saveImageList(List<String> imageList) {
         HashSet<String> set = new HashSet<>();
         set.addAll(imageList);

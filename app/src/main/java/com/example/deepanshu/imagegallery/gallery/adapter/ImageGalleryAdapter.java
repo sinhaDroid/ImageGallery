@@ -23,13 +23,13 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     private List<Bitmap> bitmapList = new ArrayList<>();
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ImageGalleryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.inflater_image, parent, false), context);
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.inflater_image, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(ImageGalleryAdapter.MyViewHolder holder, int position) {
         holder.bind(getItem(position));
     }
 
@@ -49,19 +49,14 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        Context context;
 
-        MyViewHolder(View itemView, Context context) {
+        MyViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.iv_photo);
         }
 
         void bind(Bitmap item) {
-            Glide.with(imageView.getContext())
-                    .load(item)
-                    .crossFade()
-                    .placeholder(android.R.drawable.ic_menu_camera)
-                    .into(imageView);
+            imageView.setImageBitmap(item);
         }
     }
 }

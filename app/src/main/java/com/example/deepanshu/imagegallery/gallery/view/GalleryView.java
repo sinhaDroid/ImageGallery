@@ -12,4 +12,8 @@ public interface GalleryView {
     void setAdapter(ImageGalleryAdapter imageGalleryAdapter);
 
     void startActivityForResult(Intent intent, int requestCode);
+
+    void showEmptyMessage();
+
+    void showImages();
 }

@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Base64;
 
 import com.example.deepanshu.imagegallery.gallery.adapter.ImageGalleryAdapter;
 import com.example.deepanshu.imagegallery.gallery.db.GalleryDataHandler;
-import com.example.deepanshu.imagegallery.gallery.view.GalleryFragment;
 import com.example.deepanshu.imagegallery.gallery.view.GalleryView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 /**
  * Created by deepanshu on 10/5/17.
@@ -26,7 +26,7 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     private GalleryView mGalleryView;
 
-    public GalleryPresenterImpl(GalleryView galleryView) {
+    private GalleryPresenterImpl(GalleryView galleryView) {
         this.mGalleryView = galleryView;
     }
 
@@ -36,15 +36,24 @@ public class GalleryPresenterImpl implements GalleryPresenter {
 
     @Override
     public void onActivityCreated() {
+        // set the adapter
         mGalleryView.setAdapter(mImageGalleryAdapter = new ImageGalleryAdapter());
-        updateAdapter();
+
+        // add local stored images
+        addStoredImagesInAdapter();
     }
 
-    private void updateAdapter() {
-        for (String image : GalleryDataHandler.getInstance().getImageList()) {
-            mImageGalleryAdapter.add(StringToBitMap(image));
+    private void addStoredImagesInAdapter() {
+        List<String> imageList = GalleryDataHandler.getInstance().getImageList();
+
+        if (null != imageList && imageList.size() > 0) {
+            for (String image : imageList) {
+                addInAdapter(StringToBitMap(image));
+            }
+            mImageGalleryAdapter.notifyDataSetChanged();
+        } else {
+            mGalleryView.showEmptyMessage();
         }
-        mImageGalleryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -53,6 +62,12 @@ public class GalleryPresenterImpl implements GalleryPresenter {
         mGalleryView.startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
+    /**
+     * Adding image in adapter after clicking an image
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
@@ -65,30 +80,37 @@ public class GalleryPresenterImpl implements GalleryPresenter {
     private void addInAdapter(Bitmap photo) {
         mImageGalleryAdapter.add(photo);
         mImageGalleryAdapter.notifyDataSetChanged();
+        if (mImageGalleryAdapter.getItemCount() == 0) {
+            mGalleryView.showEmptyMessage();
+        } else {
+            mGalleryView.showImages();
+        }
     }
 
     /**
+     * converting bitmap to string
      * @param bitmap
      * @return string(from given bitmap)
      */
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp=Base64.encodeToString(b, Base64.DEFAULT);
+    private String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 
     /**
+     * converting string to bitmap
      * @param encodedString
      * @return bitmap (from given string)
      */
-    public Bitmap StringToBitMap(String encodedString){
+    private Bitmap StringToBitMap(String encodedString) {
         try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.getMessage();
             return null;
         }

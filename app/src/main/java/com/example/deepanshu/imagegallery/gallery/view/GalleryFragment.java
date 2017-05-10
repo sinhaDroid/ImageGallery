@@ -3,7 +3,6 @@ package com.example.deepanshu.imagegallery.gallery.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,10 +23,9 @@ public class GalleryFragment extends Fragment implements GalleryView, View.OnCli
 
     private RecyclerView mGallery;
 
-    private FloatingActionButton mFab;
-
     private GalleryPresenter mGalleryPresenter;
 
+    // Class calling itself
     public static GalleryFragment newInstance() {
         return new GalleryFragment();
     }
@@ -42,21 +40,36 @@ public class GalleryFragment extends Fragment implements GalleryView, View.OnCli
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 4);
         mGallery = (RecyclerView) getActivity().findViewById(R.id.gallery_rcv);
-        mGallery.setHasFixedSize(true);
-        mGallery.setLayoutManager(layoutManager);
 
-        mFab = (FloatingActionButton) getActivity().findViewById(R.id.camera_fab);
-        mFab.setOnClickListener(this);
+        getActivity().findViewById(R.id.camera_fab).setOnClickListener(this);
 
+        // for separation of logic from UI Interface
         mGalleryPresenter = GalleryPresenterImpl.newInstance(this);
         mGalleryPresenter.onActivityCreated();
     }
 
+    /**
+     * Setting Adapter
+     * @param imageGalleryAdapter
+     */
     @Override
     public void setAdapter(ImageGalleryAdapter imageGalleryAdapter) {
         mGallery.setAdapter(imageGalleryAdapter);
+        mGallery.setHasFixedSize(true);
+        mGallery.setLayoutManager(new GridLayoutManager(getContext(), 4));
+    }
+
+    @Override
+    public void showEmptyMessage() {
+        mGallery.setVisibility(View.GONE);
+        getActivity().findViewById(R.id.no_image_tv).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showImages() {
+        getActivity().findViewById(R.id.no_image_tv).setVisibility(View.GONE);
+        mGallery.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -68,6 +81,12 @@ public class GalleryFragment extends Fragment implements GalleryView, View.OnCli
         }
     }
 
+    /**
+     * To handle activity result
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
